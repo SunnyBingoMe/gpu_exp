@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp2multiply", "mp2multiply\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp3tiledMultiply", "mp3tiledMultiply\mp3tiledMultiply.vcxproj", "{C9A17604-3E99-45CD-88D6-7FF7EDCAE923}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp6convolution", "mp6convolution\mp6convolution.vcxproj", "{B725D715-F8D3-4391-B301-5D97BC6391D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -51,6 +53,14 @@ Global
 		{C9A17604-3E99-45CD-88D6-7FF7EDCAE923}.Release|Win32.Build.0 = Release|Win32
 		{C9A17604-3E99-45CD-88D6-7FF7EDCAE923}.Release|x64.ActiveCfg = Release|x64
 		{C9A17604-3E99-45CD-88D6-7FF7EDCAE923}.Release|x64.Build.0 = Release|x64
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Debug|Win32.Build.0 = Debug|Win32
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Debug|x64.ActiveCfg = Debug|x64
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Debug|x64.Build.0 = Debug|x64
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Release|Win32.ActiveCfg = Release|Win32
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Release|Win32.Build.0 = Release|Win32
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Release|x64.ActiveCfg = Release|x64
+		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
