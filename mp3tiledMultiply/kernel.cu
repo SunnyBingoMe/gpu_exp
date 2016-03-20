@@ -16,9 +16,8 @@ void __syncthreads();
 
 // Compute C = A * B
 __global__
-void matrixMultiply(float *A, float *B, float *C, int numARows,
-int numAColumns, int numBRows, int numBColumns,
-int numCRows, int numCColumns) {
+void matrixMultiply(float *A, float *B, float *C, 
+    int numARows, int numAColumns, int numBRows, int numBColumns, int numCRows, int numCColumns) {
     //@@ Insert code to implement matrix multiplication here
     //@@ You have to use shared memory for this MP
     __shared__ float deviceShared_A[TILE_WIDTH][TILE_WIDTH];
@@ -26,28 +25,28 @@ int numCRows, int numCColumns) {
 
     int threadX = threadIdx.x;
     int threadY = threadIdx.y;
-    int columnIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int rowIndex    = blockIdx.y * blockDim.y + threadIdx.y;
-    int columnIndexViaTileIndex;
-    int rowIndexViaTileIndex;
+    int columnIndexC_and_B = blockIdx.x * blockDim.x + threadIdx.x;
+    int rowIndexC_and_A    = blockIdx.y * blockDim.y + threadIdx.y;
+    int columnIndexA_viaTileIndex;
+    int rowIndexB_viaTileIndex;
 
     float sum = 0;
 
     for (int tileIndex = 0; tileIndex < numAColumns/TILE_WIDTH + 1; tileIndex++){
 
-        // load tiles from A
-        columnIndexViaTileIndex = tileIndex * TILE_WIDTH + threadX;
-        if (rowIndex < numARows && columnIndexViaTileIndex < numAColumns){
-            deviceShared_A[threadY][threadX] = A[rowIndex * numAColumns + columnIndexViaTileIndex];
+        // load a tile from A
+        columnIndexA_viaTileIndex = tileIndex * TILE_WIDTH + threadX;
+        if (rowIndexC_and_A < numARows && columnIndexA_viaTileIndex < numAColumns){
+            deviceShared_A[threadY][threadX] = A[rowIndexC_and_A * numAColumns + columnIndexA_viaTileIndex];
         }
         else{
             deviceShared_A[threadY][threadX] = 0;
         }
 
-        // load tiles from B
-        rowIndexViaTileIndex = tileIndex * TILE_WIDTH + threadY;
-        if (rowIndexViaTileIndex < numBRows && columnIndex < numBColumns){
-            deviceShared_B[threadY][threadX] = B[rowIndexViaTileIndex * numBColumns + columnIndex];
+        // load a tile from B
+        rowIndexB_viaTileIndex = tileIndex * TILE_WIDTH + threadY;
+        if (rowIndexB_viaTileIndex < numBRows && columnIndexC_and_B < numBColumns){
+            deviceShared_B[threadY][threadX] = B[rowIndexB_viaTileIndex * numBColumns + columnIndexC_and_B];
         }
         else{
             deviceShared_B[threadY][threadX] = 0;
@@ -61,8 +60,8 @@ int numCRows, int numCColumns) {
         __syncthreads();
     }
 
-    if (rowIndex < numCRows && columnIndex < numCColumns){
-        C[rowIndex * numCColumns + columnIndex] = sum;
+    if (rowIndexC_and_A < numCRows && columnIndexC_and_B < numCColumns){
+        C[rowIndexC_and_A * numCColumns + columnIndexC_and_B] = sum;
     }
 
 }
