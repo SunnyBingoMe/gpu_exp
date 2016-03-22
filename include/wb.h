@@ -1097,14 +1097,14 @@ void wbSolution(const wbArg_t& args, const wbImage_t& image)
     }
     else // Check solution
     {
-        wbInternal::wbImage_save(image, args, "transformed_image.ppm");
+        //wbInternal::wbImage_save(image, args, "transformed_image.ppm");
 
         const float tolerance = 1.5f;
         int errCnt = 0;
 
-        for (int i = 0; i < image.width; ++i)
+        for (int j = 0; j < image.height; ++j)
         {
-            for (int j = 0; j < image.height; ++j)
+            for (int i = 0; i < image.width; ++i)
             {
                 for (int k = 0; k < image.channels; ++k)
                 {
@@ -1113,7 +1113,8 @@ void wbSolution(const wbArg_t& args, const wbImage_t& image)
 
                     if (error > (1.0f / wbInternal::kImageColorLimit * tolerance))
                     {
-                        if (errCnt < wbInternal::kErrorReportLimit)
+                        //if (errCnt < wbInternal::kErrorReportLimit)
+                        if (errCnt < 100)
                             std::cout << "Image pixels do not match at position (" << j << ", " << i << ", " << k << "). [" << image.data[index] << ", " <<  solnImage.data[index] << "]\n";
 
                         ++errCnt;
