@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp3tiledMultiply", "mp3tile
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp6convolution", "mp6convolution\mp6convolution.vcxproj", "{B725D715-F8D3-4391-B301-5D97BC6391D9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test32n64", "test32n64\test32n64.vcxproj", "{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,14 @@ Global
 		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Release|Win32.Build.0 = Release|Win32
 		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Release|x64.ActiveCfg = Release|x64
 		{B725D715-F8D3-4391-B301-5D97BC6391D9}.Release|x64.Build.0 = Release|x64
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Debug|Win32.Build.0 = Debug|Win32
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Debug|x64.ActiveCfg = Debug|x64
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Debug|x64.Build.0 = Debug|x64
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Release|Win32.ActiveCfg = Release|Win32
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Release|Win32.Build.0 = Release|Win32
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Release|x64.ActiveCfg = Release|x64
+		{39E63DFD-40AE-4053-94EA-C7F804BE4B0A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
