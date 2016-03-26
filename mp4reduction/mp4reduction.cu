@@ -32,7 +32,7 @@ void __syncthreads();
 #define blockId_rowIndex blockIdx.y
 
 /* specific define for this project */
-#define BLOCK_SIZE      512 // do not modify this
+#define BLOCK_SIZE      256 // you can modify this, but should be power of 2, this is due to the stride actions.
 #define NrItemEachThred 2   // do not modify this
 
 __global__
@@ -84,12 +84,9 @@ int main(int argc, char ** argv) {
     wbTime_start(Generic, "Importing data and creating memory on host");
     hostInput = (float *)wbImport(wbArg_getInputFile(args, 0), &numInputElements);
 
-    numOutputElements = numInputElements / (BLOCK_SIZE<<1);
-    if (numInputElements % (BLOCK_SIZE<<1)) {
-        numOutputElements++;
-    }
-    hostOutput = (float*)malloc(numOutputElements * sizeof(float));
+    numOutputElements = (numInputElements - 1) / (BLOCK_SIZE * 2) + 1;
 
+    hostOutput = (float*)malloc(numOutputElements * sizeof(float));
     wbTime_stop(Generic, "Importing data and creating memory on host");
 
     wbLog(TRACE, "The number of input elements in the input is ", numInputElements);
@@ -129,8 +126,10 @@ int main(int argc, char ** argv) {
     * recursively and support any size input. For simplicity, we do not
     * require that for this lab.
     ********************************************************************/
+    wbLog(TRACE, hostOutput[0]);
     for (ii = 1; ii < numOutputElements; ii++) {
         hostOutput[0] += hostOutput[ii];
+        wbLog(TRACE, hostOutput[ii]);
     }
     wbLog(TRACE, hostOutput[0]);
 
