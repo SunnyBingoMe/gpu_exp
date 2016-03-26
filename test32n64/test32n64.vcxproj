@@ -78,7 +78,7 @@
     <TargetName>$(ProjectName)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>D:\hNow\Dropbox\course\GPU\soloCuda\bin$(Configuration)\</OutDir>
+    <OutDir>D:\hNow\Dropbox\_shared__do_NOT_delete\soloCuda\bin$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)_$(Platform)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

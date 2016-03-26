@@ -73,11 +73,11 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>D:\hNow\Dropbox\course\GPU\soloCuda\bin$(Configuration)\</OutDir>
+    <OutDir>D:\hNow\Dropbox\_shared__do_NOT_delete\soloCuda\bin$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>D:\hNow\Dropbox\course\GPU\soloCuda\bin$(Configuration)\</OutDir>
+    <OutDir>D:\hNow\Dropbox\_shared__do_NOT_delete\soloCuda\bin$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Platform)</TargetName>
   </PropertyGroup>
