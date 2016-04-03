@@ -1088,6 +1088,8 @@ namespace wbInternal
 // For assignment MP6 & MP11
 void wbSolution(const wbArg_t& args, const wbImage_t& image)
 {
+    srand((unsigned int)time(NULL));
+
     wbImage_t solnImage = wbImport(wbArg_getInputFile(args, args.argc - 2));
 
     if (solnImage.width != image.width || solnImage.height != image.height)
@@ -1113,10 +1115,27 @@ void wbSolution(const wbArg_t& args, const wbImage_t& image)
 
                     if (error > (1.0f / wbInternal::kImageColorLimit * tolerance))
                     {
-                        //if (errCnt < wbInternal::kErrorReportLimit)
-                        if (errCnt < 100)
-                            std::cout << "Image pixels do not match at position (" << j << ", " << i << ", " << k << "). [" << image.data[index] << ", " <<  solnImage.data[index] << "]\n";
-
+                        if (errCnt < wbInternal::kErrorReportLimit){
+                            std::cout << "Result pixels do not match solution at position (" << j << ", " << i << ", " << k << "). [" << image.data[index] << ", " <<  solnImage.data[index] << "] " << image.data[index] -  solnImage.data[index] << "\n";
+                        }
+                        else if (errCnt < 100){
+                            float t = (float)rand()/(float)(RAND_MAX);
+                            if (t < 0.1){
+                                std::cout <<std::setw(2)<<std::setfill('0')<< "Result pixels do not match solution at position (" << j << ", " << i << ", " << k << "). [" << image.data[index] << ", " <<  solnImage.data[index] << "] " << image.data[index] -  solnImage.data[index] << " (Random err display) \n";
+                            }
+                        }
+                        else if (errCnt < 1000){
+                            float t = (float)rand()/(float)(RAND_MAX);
+                            if (t < 0.05){
+                                std::cout <<std::setw(3)<<std::setfill('0')<<  "Result pixels do not match solution at position (" << j << ", " << i << ", " << k << "). [" << image.data[index] << ", " <<  solnImage.data[index] << "] " << image.data[index] -  solnImage.data[index] << " (Random err display) \n";
+                            }
+                        }
+                        else if (errCnt < 3000){
+                            float t = (float)rand()/(float)(RAND_MAX);
+                            if (t < 0.001){
+                                std::cout <<std::setw(4)<<std::setfill('0')<<  "Result pixels do not match solution at position (" << j << ", " << i << ", " << k << "). [" << image.data[index] << ", " <<  solnImage.data[index] << "] " << image.data[index] -  solnImage.data[index] << " (Random err display) \n";
+                            }
+                        }
                         ++errCnt;
                     }
                 }
@@ -1142,3 +1161,28 @@ void wbSolution(const wbArg_t& args, const wbImage_t& image)
     } while(0)
 
 #endif
+
+__device__ 
+static float atomicMax(float* address, float val)
+{
+    int* address_as_i = (int*)address;
+    int old = *address_as_i, assumed;
+    do {
+        assumed = old;
+        old = ::atomicCAS(address_as_i, assumed, __float_as_int(::fmaxf(val, __int_as_float(assumed))));
+    } while (assumed != old);
+    return __int_as_float(old);
+}
+
+__device__
+static float atomicMin(float* address, float val)
+{
+    int* address_as_i = (int*)address;
+    int old = *address_as_i, assumed;
+    do {
+        assumed = old;
+        old = ::atomicCAS(address_as_i, assumed, __float_as_int(::fminf(val, __int_as_float(assumed))));
+    } while (assumed != old);
+    return __int_as_float(old);
+}
+

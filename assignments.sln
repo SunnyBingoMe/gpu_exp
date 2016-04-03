@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp4reduction", "mp4reductio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp5scan", "mp5scan\mp5scan.vcxproj", "{AB16C3ED-B957-4421-8BCE-EFB12C2AB08C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp11hist", "mp11hist\mp11hist.vcxproj", "{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -91,6 +93,14 @@ Global
 		{AB16C3ED-B957-4421-8BCE-EFB12C2AB08C}.Release|Win32.Build.0 = Release|Win32
 		{AB16C3ED-B957-4421-8BCE-EFB12C2AB08C}.Release|x64.ActiveCfg = Release|x64
 		{AB16C3ED-B957-4421-8BCE-EFB12C2AB08C}.Release|x64.Build.0 = Release|x64
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Debug|Win32.Build.0 = Debug|Win32
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Debug|x64.ActiveCfg = Debug|x64
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Debug|x64.Build.0 = Debug|x64
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Release|Win32.ActiveCfg = Release|Win32
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Release|Win32.Build.0 = Release|Win32
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Release|x64.ActiveCfg = Release|x64
+		{4C6D7EA0-9104-4B38-91F1-EEFFE96BB333}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
