@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webgpuThrustVectorAddition"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webgpuThrustReduction", "webgpuThrustReduction\webgpuThrustReduction.vcxproj", "{C5BEA6DC-B40A-4F99-8CDB-87B9E914607E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webgpuOpenAccVectorAddition", "webgpuOpenAccVectorAddition\webgpuOpenAccVectorAddition.vcxproj", "{C927D517-1C6A-4142-A513-973162FBE37C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -121,6 +123,14 @@ Global
 		{C5BEA6DC-B40A-4F99-8CDB-87B9E914607E}.Release|Win32.Build.0 = Release|Win32
 		{C5BEA6DC-B40A-4F99-8CDB-87B9E914607E}.Release|x64.ActiveCfg = Release|x64
 		{C5BEA6DC-B40A-4F99-8CDB-87B9E914607E}.Release|x64.Build.0 = Release|x64
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Debug|Win32.Build.0 = Debug|Win32
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Debug|x64.ActiveCfg = Debug|x64
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Debug|x64.Build.0 = Debug|x64
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Release|Win32.ActiveCfg = Release|Win32
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Release|Win32.Build.0 = Release|Win32
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Release|x64.ActiveCfg = Release|x64
+		{C927D517-1C6A-4142-A513-973162FBE37C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
