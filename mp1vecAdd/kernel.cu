@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
 
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Launch the GPU Kernel here
-    vecAdd <<<DimGrid, DimBlock >>>(deviceInput1, deviceInput2, deviceOutput, inputByteSize);
+    vecAdd <<<DimGrid, DimBlock >>>(deviceInput1, deviceInput2, deviceOutput, inputLength);
 
     cudaThreadSynchronize();
     wbTime_stop(Compute, "Performing CUDA computation");
