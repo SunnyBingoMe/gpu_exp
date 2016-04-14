@@ -15,6 +15,8 @@ void __syncthreads();
 #include "device_launch_parameters.h"
 #include <stdio.h>
 
+#include <thrust/scan.h>
+
 /* general define for cuda,  OBS: maybe not suitable for 3D */
 #define Grid_width  gridDim.x
 #define Grid_height gridDim.y
@@ -136,8 +138,8 @@ void normalization_global(float *pd_inputData, float *pd_outputData, float * pd_
         int onePixelStartIndex = (globalId_rowIndex * imageRowWidth + globalId_colIndex) * Channel_nr;
         for (int channelIndex = 0; channelIndex < Channel_nr; channelIndex++){
             unsigned char colorValueAsCharAsIndex = (unsigned char)(255 * pd_inputData[onePixelStartIndex + channelIndex]);
-            unsigned char newColorValue = 255 * (pd_shared_histFloat[colorValueAsCharAsIndex] - pd_minMax[0]) / (1 - pd_minMax[0]);
-            pd_outputData[onePixelStartIndex + channelIndex] = (float)newColorValue / 255;
+            unsigned char newColorValue = 255 * (pd_shared_histFloat[colorValueAsCharAsIndex] - pd_minMax[0]) / (pd_shared_histFloat[255] - pd_minMax[0]);
+            pd_outputData[onePixelStartIndex + channelIndex] = (float)newColorValue / 256.0f;
         }
     }
     __syncthreads();
@@ -204,6 +206,10 @@ int main(int argc, char ** argv) {
     preScan_global <<< DimGrid, DimBlock >>> (pd_inputData, pd_outputData, pd_hist_dividedToFloatProbility, pd_minMax, imageWidth, imageHeight); __syncdevice();
     wbTime_stop(Compute, "Doing the computation on the GPU preScan_global");
 
+    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
+
+
     if (Debug || Scan_alternative)
         wbCheck(cudaMemcpy(ph_hist_dividedToFloatProbility, pd_hist_dividedToFloatProbility, 256 * sizeof(float), cudaMemcpyDeviceToHost));
     if (0){ // pass
@@ -212,22 +218,28 @@ int main(int argc, char ** argv) {
         }
     }
     if (Scan_alternative){
-        wbTime_start(Compute, "Scan by CPU");
-        float t_float_sum = 0.0;
+        wbCheck(cudaMemcpy(ph_hist_dividedToFloatProbility, pd_hist_dividedToFloatProbility, 256 * sizeof(float), cudaMemcpyDeviceToHost));
+        wbTime_start(Compute, "Scan by thrust");
+        thrust::inclusive_scan(ph_hist_dividedToFloatProbility, ph_hist_dividedToFloatProbility + 256, ph_hist_dividedToFloatProbility);
+        wbTime_stop(Compute, "Scan by thrust");
+        wbCheck(cudaMemcpy(pd_hist_dividedToFloatProbility, ph_hist_dividedToFloatProbility, 256 * sizeof(float), cudaMemcpyHostToDevice));
+
+        cudaThreadSynchronize();
+        cudaDeviceSynchronize();
+
         ph_minMax[0] = 1.0;
         for (int i = 0; i < 256; i++){
             if (ph_hist_dividedToFloatProbility[i] > 0){
                 ph_minMax[0] = min(ph_minMax[0], ph_hist_dividedToFloatProbility[i]);
             }
-            t_float_sum += ph_hist_dividedToFloatProbility[i];
-            wbLog(TRACE, "pdf hist sum ", t_float_sum);
-            ph_hist_dividedToFloatProbility[i] = t_float_sum;
+            wbLog(TRACE, "ph_minMax[0] ", ph_minMax[0]);
         }
         wbCheck(cudaMemcpy(pd_minMax, ph_minMax, 1 * sizeof(float), cudaMemcpyHostToDevice));
-        wbCheck(cudaMemcpy(pd_hist_dividedToFloatProbility, ph_hist_dividedToFloatProbility, 256 * sizeof(float), cudaMemcpyHostToDevice));
-        wbTime_stop(Compute, "Scan by CPU");
     }
     else{
+        ph_minMax[0] = 0.0f;
+        wbCheck(cudaMemcpy(pd_minMax, ph_minMax, 1 * sizeof(float), cudaMemcpyHostToDevice));
+
         wbTime_start(Compute, "Scan by GPU");
         scan_global              <<< DimGrid, DimBlock >>> (pd_inputData, pd_outputData, pd_hist_dividedToFloatProbility, pd_minMax, imageWidth, imageHeight); __syncdevice();
         wbTime_stop(Compute, "Scan by GPU");
@@ -240,9 +252,15 @@ int main(int argc, char ** argv) {
         }
     }
 
+    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
+
     wbTime_start(Compute, "Doing the computation on the GPU normalization_global");
     normalization_global         <<< DimGrid, DimBlock >>> (pd_inputData, pd_outputData, pd_hist_dividedToFloatProbility, pd_minMax, imageWidth, imageHeight); __syncdevice();
     wbTime_stop(Compute, "Doing the computation on the GPU normalization_global");
+
+    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
 
     wbTime_start(Copy, "Copying data from the GPU");
     wbCheck(cudaMemcpy(ph_outputData, pd_outputData, imageWidth * imageHeight * imageChannels * sizeof(float), cudaMemcpyDeviceToHost));
