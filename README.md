@@ -28,7 +28,9 @@ https://github.com/SunnyBingoMe/gpu_coursera_with_lab_instructions
 
 ### More
 MP7 Vector Addition using OpenCL   http://bit.ly/1VTr41l 
+
 MP11 Histogram Equalization        http://bit.ly/1VTqHE9 
+
 MP12 Vector Addition using Streams http://bit.ly/1VTr55D 
 
 
