@@ -35,4 +35,6 @@ MP12 Vector Addition using Streams http://bit.ly/1VTr55D
 ***
 
 
-License: please check the licenses in the following links. 
+License: please check the licenses in the repos of mentioned links. 
+
+
