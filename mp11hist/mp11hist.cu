@@ -42,7 +42,7 @@ void __syncthreads();
 #define HISTOGRAM_LENGTH 256 // set to 256 to easy hist related thread actions. when HISTOGRAM_LENGTH < 256, hard to code. when HISTOGRAM_LENGTH > 256, need to add "if" statements
 #define Channel_nr       3
 #define Debug            1
-#define Scan_alternative 1
+#define Scan_alternative 0
 
 //@@ insert kernel code here
 __global__
@@ -88,14 +88,15 @@ void scan_global(float *pd_inputData, float *pd_outputData, float * pd_hist_divi
         __syncthreads();
 
         // use only 128 threads to do scan
-        if (localId_overallIndex2D < 128){
+        //if (localId_overallIndex2D < 128){ // __syncthreads() can NOT be inside if statement. // http://stackoverflow.com/questions/12519573/cuda-syncthreads-inside-if-statements 
 
             // scan-> reduce
             for (stride = 1; stride <= 128; stride *= 2){
                 __syncthreads();
-                perThread_index = (localId_colIndex + 1) * (stride * 2) - 1;
+                perThread_index = (localId_overallIndex2D + 1) * (stride * 2) - 1;
                 if (perThread_index < 256){
-                    pd_shared_histFloat[perThread_index] += pd_shared_histFloat[perThread_index - stride];
+                    if (localId_overallIndex2D < 128)
+                        pd_shared_histFloat[perThread_index] += pd_shared_histFloat[perThread_index - stride];
                 }
             }
 
@@ -103,13 +104,14 @@ void scan_global(float *pd_inputData, float *pd_outputData, float * pd_hist_divi
             __syncthreads();
             for (stride = 128 / 2; stride >= 1; stride /= 2){
                 __syncthreads();
-                perThread_index = (localId_colIndex + 1) * (stride * 2) - 1;
+                perThread_index = (localId_overallIndex2D + 1) * (stride * 2) - 1;
                 if (perThread_index + stride < 256){
-                    pd_shared_histFloat[perThread_index + stride] += pd_shared_histFloat[perThread_index];
+                    if (localId_overallIndex2D < 128)
+                        pd_shared_histFloat[perThread_index + stride] += pd_shared_histFloat[perThread_index];
                 }
             }
 
-        } // if (localId_overallIndex2D < 128){
+        //} // if (localId_overallIndex2D < 128) // __syncthreads() can NOT be inside if statement. // http://stackoverflow.com/questions/12519573/cuda-syncthreads-inside-if-statements 
 
         // save back to global mem
         __syncthreads();
@@ -210,14 +212,13 @@ int main(int argc, char ** argv) {
     cudaDeviceSynchronize();
 
 
-    if (Debug || Scan_alternative)
+#if Debug
         wbCheck(cudaMemcpy(ph_hist_dividedToFloatProbility, pd_hist_dividedToFloatProbility, 256 * sizeof(float), cudaMemcpyDeviceToHost));
-    if (0){ // pass
         for (int i = 0; i < 256; i++){
             wbLog(TRACE, "pdf hist ", i, ": ", ph_hist_dividedToFloatProbility[i]);
         }
-    }
-    if (Scan_alternative){
+#endif
+#if Scan_alternative
         wbCheck(cudaMemcpy(ph_hist_dividedToFloatProbility, pd_hist_dividedToFloatProbility, 256 * sizeof(float), cudaMemcpyDeviceToHost));
         wbTime_start(Compute, "Scan by thrust");
         thrust::inclusive_scan(ph_hist_dividedToFloatProbility, ph_hist_dividedToFloatProbility + 256, ph_hist_dividedToFloatProbility);
@@ -235,22 +236,22 @@ int main(int argc, char ** argv) {
             wbLog(TRACE, "ph_minMax[0] ", ph_minMax[0]);
         }
         wbCheck(cudaMemcpy(pd_minMax, ph_minMax, 1 * sizeof(float), cudaMemcpyHostToDevice));
-    }
-    else{
+#else
         ph_minMax[0] = 0.0f;
         wbCheck(cudaMemcpy(pd_minMax, ph_minMax, 1 * sizeof(float), cudaMemcpyHostToDevice));
 
+        cudaThreadSynchronize();
+        cudaDeviceSynchronize();
         wbTime_start(Compute, "Scan by GPU");
         scan_global              <<< DimGrid, DimBlock >>> (pd_inputData, pd_outputData, pd_hist_dividedToFloatProbility, pd_minMax, imageWidth, imageHeight); __syncdevice();
         wbTime_stop(Compute, "Scan by GPU");
-    }
-
-    if (Debug){
+#endif
+#if Debug
         wbCheck(cudaMemcpy(ph_hist_dividedToFloatProbility, pd_hist_dividedToFloatProbility, 256 * sizeof(float), cudaMemcpyDeviceToHost));
         for (int i = 0; i < 256; i++){
             wbLog(TRACE, "cdf hist ", i, ": ", ph_hist_dividedToFloatProbility[i]);
         }
-    }
+#endif
 
     cudaThreadSynchronize();
     cudaDeviceSynchronize();
@@ -268,11 +269,11 @@ int main(int argc, char ** argv) {
 
     wbTime_stop(GPU, "Doing GPU/CPU Computation (memory + compute)");
 
-    if (Debug){
+#if Debug
         wbCheck(cudaMemcpy(&(ph_minMax[1]), &(pd_minMax[1]), 1 * sizeof(float), cudaMemcpyDeviceToHost));
         wbLog(TRACE, "ph_minMax[0]: ", ph_minMax[0]);
         wbLog(TRACE, "ph_minMax[1]: ", ph_minMax[1]);
-    }
+#endif
 
     wbSolution(args, outputImage_struct);
 

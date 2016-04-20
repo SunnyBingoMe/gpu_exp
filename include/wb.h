@@ -1160,9 +1160,7 @@ void wbSolution(const wbArg_t& args, const wbImage_t& image)
         }                                                                     \
     } while(0)
 
-#endif
-
-__device__ 
+__device__
 static float atomicMax(float* address, float val)
 {
     int* address_as_i = (int*)address;
@@ -1186,3 +1184,5 @@ static float atomicMin(float* address, float val)
     return __int_as_float(old);
 }
 
+
+#endif
